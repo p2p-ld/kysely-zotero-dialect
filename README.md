@@ -1,2 +1,3 @@
-# kysely-zotero-driver
+# kysely-zotero-dialect
+
 Use kysely within a zotero plugin
