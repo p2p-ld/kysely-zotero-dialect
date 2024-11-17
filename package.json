@@ -1,0 +1,27 @@
+{
+  "name": "kysely-zotero-dialect",
+  "version": "0.1.0",
+  "description": "Use kysely within zotero plugins",
+  "main": "src/index.ts",
+  "repository": "https://github.com/p2p-ld/kysely-zotero-driver.git",
+  "author": "sneakers-the-rat <sneakers-the-rat@protonmail.com>",
+  "license": "EUPL-1.2",
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "gts": "^6.0.2",
+    "typescript": "^5.6.3",
+    "zotero-types": "^3.0.1"
+  },
+  "scripts": {
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "compile": "tsc",
+    "fix": "gts fix",
+    "prepare": "yarn run compile",
+    "pretest": "yarn run compile",
+    "posttest": "yarn run lint"
+  },
+  "dependencies": {
+    "kysely": "^0.27.4"
+  }
+}

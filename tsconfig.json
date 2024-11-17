@@ -1,0 +1,20 @@
+{
+  "extends": "./node_modules/gts/tsconfig-google.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build",
+    "importHelpers": true,
+    "target": "es2017",
+    "module": "commonjs",
+    "noImplicitAny": false,
+    "esModuleInterop": true,
+    "lib": ["es2017", "dom"],
+    "typeRoots": ["./node_modules/@types"],
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.ts",
+    "node_modules/zotero-types"
+  ]
+}
