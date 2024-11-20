@@ -90,7 +90,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-  await db.schema.dropTable("weaver.a_table").execute();
+  await db.schema.dropTable("demo.a_table").execute();
 }
 ```
 
@@ -142,8 +142,8 @@ import { migrationProvider } from "./migrations/index";
 export const initDB = async (): Promise<Kysely<Database>> => {
   return new Kysely<Database>({
     dialect: new ZoteroDialect({
-      db_name: "weaver",
-      db_path: "weaver_test.sqlite",
+      db_name: "demo",
+      db_path: "demo_db.sqlite",
     })
   });
 };
