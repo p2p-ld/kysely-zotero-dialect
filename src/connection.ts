@@ -3,38 +3,29 @@ import {
   DatabaseConnection,
   QueryResult,
   SelectQueryNode,
-  SqliteDatabase,
 } from 'kysely';
 
 export class ZoteroDatabaseConnection implements DatabaseConnection {
-  constructor(db: SqliteDatabase) {
-    this.#db = db;
-  }
+  async executeQuery<O>(compiledQuery: CompiledQuery): Promise<QueryResult<O>> {
+    const {sql, parameters, query} = compiledQuery;
 
-  executeQuery<O>(compiledQuery: CompiledQuery): Promise<QueryResult<O>> {
-    const {sql, parameters} = compiledQuery;
-    const stmt = this.#db.prepare(sql);
-
-    if (stmt.reader) {
-      return Promise.resolve({
-        rows: stmt.all(parameters) as O[],
-      });
+    if (SelectQueryNode.is(query)) {
+      return {
+        rows: (await Zotero.DB.queryAsync(sql, parameters)) as O[],
+      };
     } else {
-      const {changes, lastInsertRowid} = stmt.run(parameters);
+      await Zotero.DB.queryAsync(sql, parameters);
+      const statement = 'SELECT last_insert_rowid() AS lastInsertRowID';
+      const lastInsertRowID = await Zotero.DB.queryAsync(statement, []);
 
-      const numAffectedRows =
-        changes !== undefined && changes !== null ? BigInt(changes) : undefined;
-
-      return Promise.resolve({
-        // TODO: remove.
-        numUpdatedOrDeletedRows: numAffectedRows,
-        numAffectedRows,
+      return {
         insertId:
-          lastInsertRowid !== undefined && lastInsertRowid !== null
-            ? BigInt(lastInsertRowid)
+          lastInsertRowID && 'lastInsertRowID' in lastInsertRowID
+            ? // eslint-disable-next-line n/no-unsupported-features/es-builtins
+              BigInt(lastInsertRowID!.lastInsertRowID as number)
             : undefined,
         rows: [],
-      });
+      };
     }
   }
 
@@ -42,19 +33,10 @@ export class ZoteroDatabaseConnection implements DatabaseConnection {
     compiledQuery: CompiledQuery,
     _chunkSize: number,
   ): AsyncIterableIterator<QueryResult<R>> {
-    const {sql, parameters, query} = compiledQuery;
-    const stmt = this.#db.prepare(sql);
-    if (SelectQueryNode.is(query)) {
-      const iter = stmt.iterate(parameters) as IterableIterator<R>;
-      for (const row of iter) {
-        yield {
-          rows: [row],
-        };
-      }
-    } else {
-      throw new Error(
-        'Sqlite driver only supports streaming of select queries',
-      );
-    }
+    // This could be done with the `onRow` callback, but not implementing for now
+    // https://devdoc.net/web/developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules/Sqlite.jsm.html
+    throw new Error(
+      'ZoteroSqliteDriver does not support streaming queries yet',
+    );
   }
 }
