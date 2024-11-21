@@ -14,6 +14,12 @@ export class ZoteroDatabaseConnection implements DatabaseConnection {
         rows: (await Zotero.DB.queryAsync(sql, parameters)) as O[],
       };
     } else {
+      // FIXME: Need to use an onRow callback here to avoid getting the opaque Zotero Proxy objects
+      // then we probably have to use the metadata from the query to get the name and types of the rows
+      // because amazingly this is unknowable:
+      // https://devdoc.net/web/developer.mozilla.org/en-US/docs/MozIStorageRow.html#getResultByIndex()
+      //
+
       await Zotero.DB.queryAsync(sql, parameters);
       const statement = 'SELECT last_insert_rowid() AS lastInsertRowID';
       const lastInsertRowID = await Zotero.DB.queryAsync(statement, []);

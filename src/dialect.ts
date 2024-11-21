@@ -7,11 +7,11 @@ import {
   SqliteIntrospector,
   DialectAdapter,
   SqliteAdapter,
-  SqliteQueryCompiler,
 } from 'kysely';
 
 import {ZoteroDialectConfig} from './config';
 import {ZoteroSqliteDriver} from './driver';
+import {ZoteroQueryCompiler} from './query-compiler';
 import {freeze} from './util';
 
 /**
@@ -31,7 +31,7 @@ export class ZoteroDialect implements Dialect {
   }
 
   createQueryCompiler(): QueryCompiler {
-    return new SqliteQueryCompiler();
+    return new ZoteroQueryCompiler();
   }
 
   createAdapter(): DialectAdapter {

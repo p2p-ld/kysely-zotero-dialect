@@ -44,6 +44,8 @@ export class ZoteroSqliteDriver implements Driver {
   }
 
   async init(): Promise<void> {
+    // FIXME: Need to check if database already attached here
+    // this gets called every transaction, not on instantiation
     await Zotero.DB.queryAsync('ATTACH DATABASE ? AS ?', [
       this.abs_path,
       this.config.db_name,
