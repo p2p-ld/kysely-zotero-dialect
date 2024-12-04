@@ -211,7 +211,7 @@ async function select(db: Kysely<Database>) {
   return await db
     .selectFrom("a_table")
     .where("cool_value", "=", "hey")
-    .selectAll()
+    .select(['id', 'cool_value'])
     .execute();
 }
 ```
@@ -235,6 +235,20 @@ is substantially more complicated and error-prone than using the Zotero API.
 These models are *not* guaranteed to be up to date, though they do include
 a `MODEL_VERSIONS` const that should allow you to check if they are if you
 want to use them or PR an update to them.
+
+## Caveats
+
+### Return Object Types
+
+Amazingly, the Mozilla XUL Sqlite3 driver's [`mozIStorageRow`](https://devdoc.net/web/developer.mozilla.org/en-US/docs/MozIStorageRow.html)
+object can't [return the names of selected columns](https://bugzilla.mozilla.org/show_bug.cgi?id=1326565),
+and Zotero [wraps them in a proxy object](https://github.com/zotero/zotero/blob/8317f7783783a672b2b30a9b041a611ded98aa61/chrome/content/zotero/xpcom/db.js#L644-L670)
+rather than properly handling the query. 
+
+We attempt to rescue this by introspecting the query, but as a result we are unable to infer
+columns from a `selectAll()` (aka `SELECT * FROM table`) query. When a `selectAll()` query is used,
+we return the zotero proxy object, which can select columns if they are known in advance,
+but otherwise does not have any other `Object` methods aside from `get`.
 
 ## Development
 
