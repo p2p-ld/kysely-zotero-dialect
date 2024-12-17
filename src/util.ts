@@ -37,21 +37,15 @@ export function getJsonObjectArgs(node: SelectQueryNode): string[] {
 }
 
 // Try to convert a zotero row proxy object into a regular JS object
-export function unpackRowProxy<R>(
-  proxyRows: object[] | undefined,
-  query: SelectQueryNode,
-) {
+export function unpackRowProxy<R>(proxyRows: object[], query: SelectQueryNode) {
   const col_names = getJsonObjectArgs(query);
 
-  const rows =
-    proxyRows === undefined
-      ? undefined
-      : proxyRows.map(row => {
-          const row_obj = {};
-          col_names.forEach(col_name => {
-            row_obj[col_name] = row[col_name];
-          });
-          return row_obj;
-        });
+  const rows = proxyRows.map(row => {
+    const row_obj = {};
+    col_names.forEach(col_name => {
+      row_obj[col_name] = row[col_name];
+    });
+    return row_obj;
+  });
   return rows as R[];
 }

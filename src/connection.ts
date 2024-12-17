@@ -12,17 +12,21 @@ export class ZoteroDatabaseConnection implements DatabaseConnection {
 
     if (SelectQueryNode.is(query)) {
       const proxyRows = await Zotero.DB.queryAsync(sql, parameters);
-      try {
-        return {
-          rows: unpackRowProxy<O>(proxyRows, query),
-        };
-      } catch (error) {
-        Zotero.log(
-          'Could not get row names, returning Zotero Proxy object, which can directly access attributes but otherwise does not have the rest of the Object methods',
-        );
-        return {
-          rows: proxyRows as O[],
-        };
+      if (typeof proxyRows === 'undefined') {
+        return {rows: []};
+      } else {
+        try {
+          return {
+            rows: unpackRowProxy<O>(proxyRows!, query),
+          };
+        } catch (error) {
+          Zotero.log(
+            'Could not get row names, returning Zotero Proxy object, which can directly access attributes but otherwise does not have the rest of the Object methods',
+          );
+          return {
+            rows: proxyRows as O[],
+          };
+        }
       }
     } else {
       await Zotero.DB.queryAsync(sql, parameters);
