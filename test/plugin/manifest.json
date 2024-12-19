@@ -1,0 +1,16 @@
+{
+  "manifest_version": 2,
+  "name": "kysely-dialect-dummy",
+  "version": "0.0.0",
+  "description": "dummy plugin with nothing in it!",
+  "author": "sneakers-the-rat",
+  "homepage_url": "https://example.com",
+  "applications": {
+    "zotero": {
+      "id": "kysely-dialect-dummy",
+      "update_url": "https://example.com/update.json",
+      "strict_min_version": "7.0.0-beta.70",
+      "strict_max_version": "7.0.*"
+    }
+  }
+}
