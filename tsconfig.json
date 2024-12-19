@@ -1,8 +1,11 @@
 {
   "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
-    "rootDir": "src",
     "outDir": "build",
+    "rootDirs": [
+      "src",
+      "test"
+    ],
     "importHelpers": true,
     "target": "es2017",
     "module": "commonjs",
@@ -10,12 +13,11 @@
     "esModuleInterop": true,
     "lib": ["es2017", "dom"],
     "typeRoots": ["./node_modules/@types"],
-    "skipLibCheck": true
+    "skipLibCheck": true,
   },
   "include": [
     "src/**/*.ts",
     "test/**/*.ts",
-    "zotero-plugin.config.ts",
     "node_modules/zotero-types"
   ]
 }
