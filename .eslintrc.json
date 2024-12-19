@@ -9,5 +9,8 @@
     "n/no-unpublished-import": ["error", {
       "allowModules": ["chai", "zotero-plugin-scaffold"]
     }]
-  }
+  },
+  "ignorePatterns": [
+    "zotero-plugin.config.ts"
+  ]
 }
