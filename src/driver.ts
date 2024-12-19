@@ -3,6 +3,59 @@ import {ZoteroDialectConfig} from './config';
 import {ZoteroDatabaseConnection} from './connection';
 import {freeze} from './util';
 
+export class ZoteroSqliteDriver implements Driver {
+  readonly connectionMutex = new ConnectionMutex();
+
+  readonly config: ZoteroDialectConfig;
+  readonly abs_path: string;
+
+  db?: typeof Zotero.DB;
+  connection?: ZoteroDatabaseConnection;
+
+  constructor(config: ZoteroDialectConfig) {
+    this.config = freeze({...config});
+    this.abs_path = PathUtils.join(
+      Zotero.DataDirectory.dir,
+      `${this.config.db_name}.sqlite`,
+    );
+  }
+
+  async init(): Promise<void> {
+    this.db = new Zotero.DBConnection(this.config.db_name);
+
+    this.connection = new ZoteroDatabaseConnection(this.db!);
+  }
+
+  async acquireConnection(): Promise<DatabaseConnection> {
+    // SQLite only has one single connection. We use a mutex here to wait
+    // until the single connection has been released.
+    await this.connectionMutex.lock();
+    return this.connection!;
+  }
+
+  async beginTransaction(connection: DatabaseConnection): Promise<void> {
+    await connection.executeQuery(CompiledQuery.raw('begin'));
+  }
+
+  async commitTransaction(connection: DatabaseConnection): Promise<void> {
+    await connection.executeQuery(CompiledQuery.raw('commit'));
+  }
+
+  async rollbackTransaction(connection: DatabaseConnection): Promise<void> {
+    await connection.executeQuery(CompiledQuery.raw('rollback'));
+  }
+
+  async releaseConnection(): Promise<void> {
+    this.connectionMutex.unlock();
+  }
+
+  async destroy(): Promise<void> {
+    if (!(typeof this.db === 'undefined')) {
+      await this.db.closeDatabase(false);
+    }
+  }
+}
+
 class ConnectionMutex {
   #promise?: Promise<void>;
   #resolve?: () => void;
@@ -24,66 +77,5 @@ class ConnectionMutex {
     this.#resolve = undefined;
 
     resolve?.();
-  }
-}
-
-export class ZoteroSqliteDriver implements Driver {
-  static readonly connectionMutex = new ConnectionMutex();
-
-  readonly config: ZoteroDialectConfig;
-  readonly abs_path: string;
-
-  connection?: ZoteroDatabaseConnection;
-
-  constructor(config: ZoteroDialectConfig) {
-    this.config = freeze({...config});
-    this.abs_path = PathUtils.join(
-      Zotero.DataDirectory.dir,
-      this.config.db_path,
-    );
-  }
-
-  async init(): Promise<void> {
-    // FIXME: Need to check if database already attached here
-    // this gets called every transaction, not on instantiation
-    try {
-      await Zotero.DB.queryAsync('ATTACH DATABASE ? AS ?', [
-        this.abs_path,
-        this.config.db_name,
-      ]);
-    } catch (e) {
-      if (e instanceof Error && !e.message.includes('already in use')) {
-        throw e;
-      }
-    }
-
-    this.connection = new ZoteroDatabaseConnection();
-  }
-
-  async acquireConnection(): Promise<DatabaseConnection> {
-    // SQLite only has one single connection. We use a mutex here to wait
-    // until the single connection has been released.
-    await ZoteroSqliteDriver.connectionMutex.lock();
-    return this.connection!;
-  }
-
-  async beginTransaction(connection: DatabaseConnection): Promise<void> {
-    await connection.executeQuery(CompiledQuery.raw('begin'));
-  }
-
-  async commitTransaction(connection: DatabaseConnection): Promise<void> {
-    await connection.executeQuery(CompiledQuery.raw('commit'));
-  }
-
-  async rollbackTransaction(connection: DatabaseConnection): Promise<void> {
-    await connection.executeQuery(CompiledQuery.raw('rollback'));
-  }
-
-  async releaseConnection(): Promise<void> {
-    ZoteroSqliteDriver.connectionMutex.unlock();
-  }
-
-  async destroy(): Promise<void> {
-    // Nothing to be done.
   }
 }
