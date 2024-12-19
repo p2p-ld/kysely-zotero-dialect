@@ -3514,10 +3514,10 @@ yocto-queue@^0.1.0:
   resolved "https://registry.npmjs.org/yocto-queue/-/yocto-queue-0.1.0.tgz"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zotero-plugin-scaffold@^0.2.0-beta.10:
-  version "0.2.0-beta.11"
-  resolved "https://registry.yarnpkg.com/zotero-plugin-scaffold/-/zotero-plugin-scaffold-0.2.0-beta.11.tgz#0e7034fb7e73f4a0d46a33522f11fe4fb02821d1"
-  integrity sha512-1lG5fHcKPYifQxUUJ8rla//TV7SGJMEO1V0F2O2NQA0Tecp1XWdO8rVottOeythmrZ5zb6++lnGEe6OGWNBItA==
+zotero-plugin-scaffold@==0.2.0-beta.10:
+  version "0.2.0-beta.10"
+  resolved "https://registry.yarnpkg.com/zotero-plugin-scaffold/-/zotero-plugin-scaffold-0.2.0-beta.10.tgz#7d76128431d88092f907492afb71c9a1a845645a"
+  integrity sha512-QtlMEohEdpSjYK4WTf6xpNFZKNhfseOC6EA8iYZfPQp+2Ew8u/64o3LE43PTK2SiNx/YSeCErWAY7CoIDrIhZg==
   dependencies:
     "@commander-js/extra-typings" "^12.1.0"
     adm-zip "^0.5.16"
