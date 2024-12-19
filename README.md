@@ -1,5 +1,7 @@
 # kysely-zotero-dialect
 
+![NPM Version](https://img.shields.io/npm/v/kysely-zotero-dialect)
+
 Use kysely within a zotero plugin.
 
 This is a very thin wrapper around Zotero's query methods that allows
