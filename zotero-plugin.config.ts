@@ -28,7 +28,7 @@ export default defineConfig({
     },
   },
   test: {
-    entries: ['test/tests/'],
+    entries: ['test/'],
     abortOnFail: false,
     exitOnFinish: true,
     waitForPlugin: '() => Zotero.Dummy',

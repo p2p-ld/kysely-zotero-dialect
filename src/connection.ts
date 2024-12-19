@@ -29,7 +29,7 @@ export class ZoteroDatabaseConnection implements DatabaseConnection {
         }
       }
     } else {
-      await Zotero.DB.queryAsync(sql, parameters);
+      const proxyRows = await Zotero.DB.queryAsync(sql, parameters);
       // const statement = 'SELECT last_insert_rowid() AS lastInsertRowID';
       // const lastInsertRowID = await Zotero.DB.queryAsync(statement, []);
 
@@ -39,7 +39,7 @@ export class ZoteroDatabaseConnection implements DatabaseConnection {
         //     ? // eslint-disable-next-line n/no-unsupported-features/es-builtins
         //       BigInt(lastInsertRowID!.lastInsertRowID as number)
         //     : undefined,
-        rows: [],
+        rows: [proxyRows] as O[],
       };
     }
   }

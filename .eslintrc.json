@@ -2,15 +2,21 @@
   "extends": "./node_modules/gts/",
   "settings": {
     "node": {
-      "version": ">=8.5.0"
+      "version": ">=14.14.0"
     }
   },
   "rules": {
     "n/no-unpublished-import": ["error", {
-      "allowModules": ["chai", "zotero-plugin-scaffold"]
+      "allowModules": ["chai", "zotero-plugin-scaffold", "better-sqlite3", "chai-files"]
     }]
   },
   "ignorePatterns": [
     "zotero-plugin.config.ts"
-  ]
+  ],
+  "parserOptions": {
+    "project": [
+      "test/tsconfig.json"
+    ]
+  }
+
 }

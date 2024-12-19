@@ -1,5 +1,13 @@
 {
   "extends": "../tsconfig.json",
-  "include": ["./**/*.ts", "../node_modules/zotero-types"],
-  "exclude": []
+  "include": [
+    "../src/**/*.ts",
+    "**/*.ts",
+    "../node_modules/zotero-types"
+  ],
+
+  "compilerOptions": {
+    "rootDir": "../",
+    "moduleResolution": "node16"
+  }
 }

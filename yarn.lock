@@ -695,6 +695,11 @@ arrify@^1.0.1:
   resolved "https://registry.npmjs.org/arrify/-/arrify-1.0.1.tgz"
   integrity sha512-3CYzex9M9FGQjCGMGyi6/31c8GJbgb0qGyrx5HWxPd0aCwh4cB2YjMb2Xf9UuoogrMrlO9cTqnB5rI5GHZTcUA==
 
+assertion-error@^1.0.1:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/assertion-error/-/assertion-error-1.1.0.tgz#e60b6b0e8f301bd97e5375215bda406c85118c0b"
+  integrity sha512-jgsaNduz+ndvGyFt3uSuWqvy4lCnIJiovtouQN5JZHOKCS2QuhEdbcQHFhVksz2N2U9hXJo8odG7ETyWlEeuDw==
+
 assertion-error@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/assertion-error/-/assertion-error-2.0.1.tgz#f641a196b335690b1070bf00b6e7593fec190bf7"
@@ -861,6 +866,13 @@ canvas@^3.0.0-rc2:
     node-addon-api "^7.0.0"
     prebuild-install "^7.1.1"
     simple-get "^3.0.3"
+
+chai-files@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/chai-files/-/chai-files-1.4.0.tgz#0e25610fadc551b1eae79c2f4ee79faf2f842296"
+  integrity sha512-tPTx7H2kpR+wILWHRx8RxpXcRUdc2uH8su505C9R3p5GA+eYbZBXuxWC0RZbyElYi7X7Fp/V/S2PQjkakrT1mQ==
+  dependencies:
+    assertion-error "^1.0.1"
 
 chai@^5.1.2:
   version "5.1.2"
