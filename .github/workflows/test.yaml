@@ -23,7 +23,7 @@ jobs:
           node-version: 23
 
       - name: Install deps
-        run: npm install
+        run: yarn install
 
       - name: Test
-        run: npm test
+        run: yarn run test
