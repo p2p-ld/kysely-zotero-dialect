@@ -7,11 +7,17 @@ import {
 import {unpackRowProxy} from './util';
 
 export class ZoteroDatabaseConnection implements DatabaseConnection {
+  readonly db: typeof Zotero.DB;
+
+  constructor(db: typeof Zotero.DB) {
+    this.db = db;
+  }
+
   async executeQuery<O>(compiledQuery: CompiledQuery): Promise<QueryResult<O>> {
     const {sql, parameters, query} = compiledQuery;
 
     if (SelectQueryNode.is(query)) {
-      const proxyRows = await Zotero.DB.queryAsync(sql, parameters);
+      const proxyRows = await this.db.queryAsync(sql, parameters);
       if (typeof proxyRows === 'undefined') {
         return {rows: []};
       } else {
@@ -29,7 +35,7 @@ export class ZoteroDatabaseConnection implements DatabaseConnection {
         }
       }
     } else {
-      const proxyRows = await Zotero.DB.queryAsync(sql, parameters);
+      const proxyRows = await this.db.queryAsync(sql, parameters);
       // const statement = 'SELECT last_insert_rowid() AS lastInsertRowID';
       // const lastInsertRowID = await Zotero.DB.queryAsync(statement, []);
 

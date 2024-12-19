@@ -1,18 +1,8 @@
-import {SqliteQueryCompiler, FromNode, CreateIndexNode} from 'kysely';
+import {SqliteQueryCompiler, CreateIndexNode} from 'kysely';
 
 export class ZoteroQueryCompiler extends SqliteQueryCompiler {
-  /*
-   * TODO: Append the database name to every `from` query
-   */
-  protected override visitFrom(node: FromNode) {
-    // this.append('from ');
-    // this.compileList(node.froms);
-    super.visitFrom(node);
-  }
-
   protected override visitCreateIndex(node: CreateIndexNode): void {
     // Override to correctly place the database name before the index name
-
     this.append('create ');
 
     if (node.unique) {

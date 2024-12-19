@@ -28,21 +28,21 @@ const migration: Migration = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   up: async (db: Kysely<any>): Promise<void> => {
     await db.schema
-      .createTable('test.table_a')
+      .createTable('table_a')
       .addColumn('id', 'integer', col => col.primaryKey())
       .addColumn('value_a', 'text')
       .execute();
 
     await db.schema
-      .createTable('test.table_b')
+      .createTable('table_b')
       .addColumn('id', 'integer', col => col.primaryKey())
       .addColumn('value_a', 'text')
       .execute();
   },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   down: async (db: Kysely<any>): Promise<void> => {
-    await db.schema.dropTable('test.table_a');
-    await db.schema.dropTable('test.table_b');
+    await db.schema.dropTable('table_a');
+    await db.schema.dropTable('table_b');
   },
 };
 export const migrationProvider: MigrationProvider = {
@@ -54,7 +54,6 @@ export const migrationProvider: MigrationProvider = {
 };
 export const config: ZoteroDialectConfig = {
   db_name: 'test',
-  db_path: 'test.sqlite',
 };
 
 export async function createDB(): Promise<Kysely<Database>> {

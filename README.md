@@ -12,15 +12,10 @@ or invent your own data storage system.
 
 ## Approach
 
-The dialect works by creating a secondary database and [`ATTACH`-ing](https://sqlite.org/lang_attach.html)
-it to the zotero database. This allows us to reuse the Zotero sqlite driver
-with minimal patching while also providing full control over 
-a database that can be independent of Zotero's.
-
-All of the queries are then routed through Zotero's `Zotero.DB.queryAsync` method.
-The `ZoteroSqliteDriver` class uses a static connection mutex shared among instances,
-so multiple plugins using `kysely-zotero-dialect` should be safe to use alongside one
-another (in addition to any thread-safety that Zotero provides via `queryAsync`).
+We create a new sqlite database in Zotero's data directory using the name of the database,
+such that a `db_name: foo` will create `{DATA_DIR}/foo.sqlite`.
+All queries are then independent of Zotero's main database,
+but can still use the packaged XUL/XPCOM sqlite driver.
 
 ## Installation
 
@@ -72,25 +67,20 @@ and most typescript plugins are compiled into a single file (at least currently)
 we should provide migrations programmatically in the plugin package
 rather than use migration that depends on the file structure of the migrations.
 
-> [!IMPORTANT]
-> You should, whenever possible, unless you are absolutely sure that zotero
-> does not and will never use your table name, refer to your tables with the full
-> `{plugin_name}.{table_name}` syntax.
-
 `src/migrations/001_test.ts`
 ```ts
 import type { Kysely, sql } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
-    .createTable("demo.demo_table")
+    .createTable("demo_table")
     .addColumn("id", "integer", (col) => col.primaryKey())
     .addColumn("cool_value", "text")
     .execute();
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-  await db.schema.dropTable("demo.a_table").execute();
+  await db.schema.dropTable("a_table").execute();
 }
 ```
 
@@ -120,16 +110,10 @@ A database is configured with a `ZoteroDialectConfig` like:
 ```ts
 export interface ZoteroDialectConfig {
   db_name: string;
-  db_path: string;
 }
 ```
 
-such that
-
-- a database is created in `{zotero_data_directory}/{db_name}`,
-  like `~/Zotero/demo.sqlite`
-- the database is attached to the zotero database like
-  `'ATTACH DATABASE ? AS ?', [db_name, db_path]`
+such that a database is created in `{zotero_data_directory}/{db_name}`, like `~/Zotero/demo.sqlite`
 
 `src/db.ts`
 ```ts
@@ -143,7 +127,6 @@ export const initDB = async (): Promise<Kysely<Database>> => {
   return new Kysely<Database>({
     dialect: new ZoteroDialect({
       db_name: "demo",
-      db_path: "demo_db.sqlite",
     })
   });
 };
@@ -194,10 +177,6 @@ export async function startup({id, version, resourceURI, rootURI = resourceURI.s
 
 Now you're just using kysely normally!
 
-You can use the name of your tables if they are different than
-zotero's tables, but usually you should use the fully qualified 
-`{db_name}.{table_name` form.
-
 ```ts
 async function insert(db: Kysely<Database>) {
   db
@@ -223,9 +202,9 @@ Zotero schema models are included in the `models` module and can be used like th
 ```ts
 import { models } from "kysely-zotero-dialect";
 
-export interface Database extends models.DB {
-  my_table: SomeOtherTable;
-}
+const zotero_db = new Kysely<models.DB>({
+  dialect: new ZoteroDialect({db_name: 'zotero'}),
+});
 ```
 
 which allows you to make type-safe queries directly to the Zotero database tables,
