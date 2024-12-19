@@ -38,6 +38,7 @@ export class ZoteroDialect implements Dialect {
     return new SqliteAdapter();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   createIntrospector(db: Kysely<any>): DatabaseIntrospector {
     return new SqliteIntrospector(db);
   }
