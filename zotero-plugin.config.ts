@@ -1,42 +1,36 @@
-import { defineConfig } from "zotero-plugin-scaffold";
-import fs from "fs";
-import path from "path";
+import {defineConfig} from 'zotero-plugin-scaffold';
+import fs from 'fs';
+import path from 'path';
 
-export async function copyFile(source, destination) {
-  await fs.promises.mkdir(path.dirname(destination), { recursive: true });
-  await fs.promises.copyFile(source, destination);
+function copyFile(source, destination) {
+  fs.mkdirSync(path.dirname(destination), {recursive: true});
+  fs.copyFileSync(source, destination);
 }
 
 export default defineConfig({
-  name: "kysely-dialect-dummy-plugin",
-  id: "kysely-dialect-dummy-plugin",
-  namespace: "kysely-dialect-dummy-plugin",
-  updateURL: "https://example.com/update.json",
-  dist: "build",
+  name: 'kysely-dialect-dummy-plugin',
+  id: 'kysely-dialect-dummy-plugin',
+  namespace: 'kysely-dialect-dummy-plugin',
+  updateURL: 'https://example.com/update.json',
+  dist: 'build',
   build: {
     define: {
-      author: "sneakers-the-rat"
+      author: 'sneakers-the-rat',
     },
     makeManifest: {
-      enable: false
+      enable: false,
     },
     hooks: {
-      "build:copyAssets": () => {
-        copyFile(
-          "test/plugin/manifest.json",
-          "build/addon/manifest.json",
-        );
-        copyFile(
-          "test/plugin/bootstrap.js",
-          "build/addon/bootstrap.js",
-        );
+      'build:copyAssets': () => {
+        copyFile('test/plugin/manifest.json', 'build/addon/manifest.json');
+        copyFile('test/plugin/bootstrap.js', 'build/addon/bootstrap.js');
       },
-    }
+    },
   },
   test: {
-    entries: ["test/tests/"],
+    entries: ['test/tests/'],
     abortOnFail: false,
     exitOnFinish: true,
-    waitForPlugin: `() => Zotero.Dummy`
-  }
+    waitForPlugin: '() => Zotero.Dummy',
+  },
 });

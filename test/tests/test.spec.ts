@@ -1,7 +1,7 @@
-import chai, { assert } from "chai";
+import {assert} from 'chai';
 
-describe("Startup", function () {
-  it("should have plugin instance defined", function () {
+describe('Startup', () => {
+  it('should have plugin instance defined', () => {
     assert.equal(Zotero.Dummy, true);
   });
 });
